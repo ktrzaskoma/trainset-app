@@ -1,4 +1,4 @@
-package io.github.ktrzaskoma.schedule;
+package io.github.ktrzaskoma;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package io.github.ktrzaskoma.schedule;
+package io.github.ktrzaskoma;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
