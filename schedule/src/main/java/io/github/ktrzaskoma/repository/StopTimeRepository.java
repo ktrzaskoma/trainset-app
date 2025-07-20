@@ -14,9 +14,10 @@ import java.util.List;
 public interface StopTimeRepository extends JpaRepository<StopTime, Long> {
 
     @Query("""
-        SELECT st FROM StopTime st
-        JOIN st.trip t
-        JOIN t.route r
+        SELECT DISTINCT st FROM StopTime st
+        JOIN FETCH st.trip t
+        JOIN FETCH t.route r
+        JOIN FETCH st.stop s
         WHERE st.stop.stopId = :fromStopId
         AND st.departureTime >= :departureTime
         AND st.upload.isActive = true
@@ -34,9 +35,27 @@ public interface StopTimeRepository extends JpaRepository<StopTime, Long> {
             AND cd.upload.isActive = true
         )
         ORDER BY st.departureTime
+        LIMIT 20
         """)
     List<StopTime> findConnections(@Param("fromStopId") String fromStopId,
                                    @Param("toStopId") String toStopId,
                                    @Param("departureTime") LocalTime departureTime,
                                    @Param("travelDate") LocalDate travelDate);
+
+    @Query("""
+        SELECT st FROM StopTime st
+        JOIN FETCH st.stop
+        WHERE st.trip.tripId = :tripId
+        AND st.upload.isActive = true
+        ORDER BY st.stopSequence
+        """)
+    List<StopTime> findByTripIdOrderByStopSequence(@Param("tripId") String tripId);
+
+    @Query("""
+        SELECT st FROM StopTime st
+        WHERE st.stop.stopId = :stopId
+        AND st.upload.isActive = true
+        ORDER BY st.departureTime
+        """)
+    List<StopTime> findByStopIdOrderByDepartureTime(@Param("stopId") String stopId);
 }
